@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandy Stuvik | Official Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { overflow-x: hidden; }</style>
+</head>
+<body class="bg-zinc-900 text-white font-sans antialiased min-h-screen flex flex-col">
+
+    <nav class="bg-black/80 backdrop-blur-md fixed w-full z-50 border-b border-red-600/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center cursor-pointer" onclick="showSection('home')">
+                    <span class="font-bold text-xl tracking-wider uppercase text-red-500">Sandy<span class="text-white">Stuvik</span></span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <button onclick="showSection('home')" id="nav-home" class="text-red-500 hover:text-red-400 uppercase text-sm font-medium transition-colors hidden md:block">News</button>
+                    <button onclick="showSection('shop')" id="nav-shop" class="text-gray-300 hover:text-white uppercase text-sm font-medium transition-colors hidden md:block">Shop</button>
+                    
+                    <button onclick="showSection('cart')" class="relative flex items-center bg-zinc-800 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors shadow-lg shadow-red-600/30">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        Cart <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative w-full flex-grow pt-16">
+        
+        <section id="section-home" class="absolute w-full transition-all duration-500 ease-in-out transform translate-x-0 opacity-100 z-10">
+            <div class="relative pt-16 pb-20 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=2070&q=80" class="absolute inset-0 w-full h-full object-cover opacity-30">
+                <div class="relative z-20 max-w-7xl mx-auto px-4 text-center py-20">
+                    <h1 class="text-5xl md:text-7xl font-extrabold uppercase tracking-tight text-white mb-4">Triple TSS <span class="text-red-600">Champion</span></h1>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <h2 class="text-3xl font-bold uppercase border-l-4 border-red-600 pl-4 mb-8">Latest News</h2>
+                <div id="news-container" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+            </div>
+        </section>
+
+        <section id="section-shop" class="absolute w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0">
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <h1 class="text-4xl font-black uppercase mb-12 border-l-8 border-red-600 pl-6">Official Merchandise</h1>
+                <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+            </div>
+        </section>
+
+        <section id="section-cart" class="absolute w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0">
+            <div class="max-w-4xl mx-auto px-4 py-16">
+                <h1 class="text-3xl font-black uppercase mb-8 border-b border-zinc-700 pb-4">Your Cart</h1>
+                <div id="cart-items-container" class="space-y-4 mb-8">
+                    </div>
+                <div class="bg-zinc-800 p-6 rounded-lg text-right">
+                    <p class="text-xl text-gray-400">Total Amount</p>
+                    <p id="cart-total" class="text-4xl font-black text-red-500 my-2">฿0</p>
+                    <button onclick="showSection('checkout')" id="btn-checkout" class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded uppercase w-full md:w-auto transition-colors hidden">Proceed to Checkout &rarr;</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-checkout" class="absolute w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0">
+            <div class="max-w-3xl mx-auto px-4 py-16">
+                <h1 class="text-3xl font-black uppercase mb-8 border-l-8 border-red-600 pl-4">Checkout</h1>
+                <form id="checkout-form" onsubmit="submitOrder(event)" class="bg-zinc-800 p-8 rounded-xl border border-zinc-700 space-y-6">
+                    <div>
+                        <label class="block text-gray-400 text-sm font-bold mb-2">Full Name</label>
+                        <input type="text" id="cust-name" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded p-3 focus:border-red-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm font-bold mb-2">Shipping Address</label>
+                        <textarea id="cust-address" required rows="3" class="w-full bg-zinc-900 text-white border border-zinc-700 rounded p-3 focus:border-red-500 outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm font-bold mb-2">Payment Method</label>
+                        <select id="payment-method" onchange="toggleSlipUpload()" class="w-full bg-zinc-900 text-white border border-zinc-700 rounded p-3 focus:border-red-500 outline-none">
+                            <option value="Bank Transfer">Bank Transfer (QR PromptPay)</option>
+                            <option value="Credit Card">Credit Card (Demo)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="slip-upload-section" class="bg-zinc-900 p-6 rounded border border-dashed border-zinc-600 text-center">
+                        <p class="text-red-500 font-bold mb-2">Scan to Pay: 08X-XXX-XXXX</p>
+                        <label class="block text-gray-400 text-sm mb-4">Please upload your transfer slip</label>
+                        <input type="file" id="slip-file" accept="image/*" class="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700">
+                    </div>
+
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded uppercase transition-colors text-lg shadow-lg shadow-red-600/20">Confirm & Pay <span id="checkout-total"></span></button>
+                </form>
+            </div>
+        </section>
+
+        <section id="section-success" class="absolute w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0">
+            <div class="max-w-2xl mx-auto px-4 py-32 text-center">
+                <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-green-500/30">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h1 class="text-4xl font-black uppercase mb-4">Order Received!</h1>
+                <p class="text-xl text-gray-400 mb-8">Thank you for your purchase.</p>
+                <div class="bg-zinc-800 p-6 rounded-lg inline-block text-left mb-8 border border-zinc-700">
+                    <p class="text-sm text-gray-400">Order ID: <span id="success-id" class="text-white font-bold">#---</span></p>
+                    <p class="text-sm text-gray-400 mt-2">Status: <span id="success-status" class="text-yellow-500 font-bold">Pending Review</span></p>
+                </div>
+                <br>
+                <button onclick="showSection('shop')" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 px-8 rounded uppercase transition-colors">Continue Shopping</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- State Management ---
+        let cart = [];
+        let total = 0;
+        const sections = ['home', 'shop', 'cart', 'checkout', 'success'];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            loadNews();
+            loadProducts();
+        });
+
+        // --- Navigation Logic ---
+        function showSection(targetId) {
+            sections.forEach(id => {
+                const el = document.getElementById(`section-${id}`);
+                if (id === targetId) {
+                    el.classList.replace('translate-x-full', 'translate-x-0') || el.classList.replace('-translate-x-full', 'translate-x-0');
+                    el.classList.replace('opacity-0', 'opacity-100');
+                    el.classList.remove('pointer-events-none', 'z-0');
+                    el.classList.add('z-10');
+                } else {
+                    const isLeft = sections.indexOf(id) < sections.indexOf(targetId);
+                    el.classList.replace('translate-x-0', isLeft ? '-translate-x-full' : 'translate-x-full');
+                    el.classList.replace('opacity-100', 'opacity-0');
+                    el.classList.add('pointer-events-none', 'z-0');
+                    el.classList.remove('z-10');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // อัปเดตสี Navbar
+            if(targetId === 'home' || targetId === 'shop') {
+                document.getElementById('nav-home').className = targetId === 'home' ? "text-red-500 uppercase text-sm font-medium transition-colors hidden md:block" : "text-gray-300 hover:text-white uppercase text-sm font-medium transition-colors hidden md:block";
+                document.getElementById('nav-shop').className = targetId === 'shop' ? "text-red-500 uppercase text-sm font-medium transition-colors hidden md:block" : "text-gray-300 hover:text-white uppercase text-sm font-medium transition-colors hidden md:block";
+            }
+        }
+
+        // --- Load Data ---
+        async function loadNews() {
+            try {
+                const res = await fetch('/api/news');
+                const news = await res.json();
+                document.getElementById('news-container').innerHTML = news.map(n => `
+                    <div class="bg-zinc-800 rounded-lg overflow-hidden border border-zinc-700 hover:border-red-500 transition-colors">
+                        <img src="${n.image_url}" class="w-full h-48 object-cover">
+                        <div class="p-6"><h3 class="font-bold mb-2">${n.title}</h3><p class="text-sm text-gray-400 line-clamp-2">${n.content}</p></div>
+                    </div>`).join('');
+            } catch (e) {}
+        }
+
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                document.getElementById('product-container').innerHTML = products.map(p => `
+                    <div class="bg-zinc-800 border border-zinc-700 rounded-xl overflow-hidden">
+                        <div class="h-64 bg-white p-4"><img src="${p.image_url}" class="w-full h-full object-contain"></div>
+                        <div class="p-6">
+                            <h3 class="font-bold uppercase mb-4">${p.name}</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-black text-red-500">฿${p.price.toLocaleString()}</span>
+                                <button onclick="addToCart(${p.id}, '${p.name}', ${p.price}, '${p.image_url}')" class="bg-white text-black text-xs font-bold px-4 py-2 rounded uppercase hover:bg-red-600 hover:text-white transition-colors">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            } catch (e) {}
+        }
+
+        // --- Cart Logic ---
+        function addToCart(id, name, price, img) {
+            cart.push({ id, name, price, img });
+            updateCartUI();
+            
+            // Effect แจ้งเตือนเล็กๆ
+            const btn = document.getElementById('cart-count');
+            btn.classList.add('scale-150');
+            setTimeout(() => btn.classList.remove('scale-150'), 200);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            total = cart.reduce((sum, item) => sum + item.price, 0);
+            
+            const container = document.getElementById('cart-items-container');
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center py-8">Your cart is empty.</p>';
+                document.getElementById('btn-checkout').classList.add('hidden');
+            } else {
+                container.innerHTML = cart.map((item, index) => `
+                    <div class="flex items-center justify-between bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+                        <div class="flex items-center">
+                            <img src="${item.img}" class="w-16 h-16 object-contain bg-white rounded p-1 mr-4">
+                            <p class="font-bold">${item.name}</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-red-500 font-bold mr-6">฿${item.price.toLocaleString()}</span>
+                            <button onclick="removeFromCart(${index})" class="text-gray-500 hover:text-red-500">&times;</button>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('btn-checkout').classList.remove('hidden');
+            }
+            
+            document.getElementById('cart-total').innerText = `฿${total.toLocaleString()}`;
+            document.getElementById('checkout-total').innerText = `(฿${total.toLocaleString()})`;
+        }
+
+        // --- Checkout & Slip Logic ---
+        function toggleSlipUpload() {
+            const method = document.getElementById('payment-method').value;
+            document.getElementById('slip-upload-section').style.display = method === 'Bank Transfer' ? 'block' : 'none';
+        }
+
+        async function submitOrder(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('cust-name').value;
+            const address = document.getElementById('cust-address').value;
+            const method = document.getElementById('payment-method').value;
+
+            // ส่งข้อมูลไปเซฟที่ Backend
+            const orderData = {
+                customer_name: name,
+                address: address,
+                payment_method: method,
+                total_amount: total,
+                cart_items: cart
+            };
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                if(res.ok) {
+                    const data = await res.json();
+                    // แสดงหน้า Success
+                    document.getElementById('success-id').innerText = `#ORD-${data.order_id.toString().padStart(4, '0')}`;
+                    document.getElementById('success-status').innerText = data.status;
+                    
+                    // เคลียร์ตะกร้า
+                    cart = [];
+                    updateCartUI();
+                    showSection('success');
+                }
+            } catch (err) {
+                alert("Error placing order. Please check terminal logs.");
+            }
+        }
+    </script>
+</body>
+</html>
