@@ -6,128 +6,199 @@
     <title>Sandy Stuvik | Official Demo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* บังคับไม่ให้เกิดการเลื่อนซ้าย-ขวาอย่างเด็ดขาด */
         html, body {
             overflow-x: hidden;
             width: 100%;
-            position: relative;
         }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeSlideUp 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="bg-zinc-900 text-white font-sans antialiased min-h-screen flex flex-col overflow-x-hidden">
+<body class="bg-zinc-900 text-white font-sans antialiased min-h-screen flex flex-col">
 
-    <nav class="bg-black/90 backdrop-blur-md fixed w-full z-50 border-b border-red-600/30">
+    <nav class="bg-black/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-red-600/30">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <div class="flex-shrink-0 cursor-pointer" onclick="showSection('home')">
+                <div class="flex-shrink-0 cursor-pointer mr-2 md:mr-6" onclick="showSection('home')">
                     <span class="font-bold text-lg md:text-xl tracking-wider uppercase text-red-500">Sandy<span class="text-white ml-1">Stuvik</span></span>
                 </div>
                 
-                <div class="flex items-center space-x-4 md:space-x-8">
-                    <div class="flex items-center space-x-3 md:space-x-6">
-                        <button onclick="showSection('home')" id="nav-home" class="text-red-500 uppercase text-xs md:text-sm font-bold tracking-wide transition-colors">News</button>
-                        <button onclick="showSection('shop')" id="nav-shop" class="text-gray-400 hover:text-white uppercase text-xs md:text-sm font-bold tracking-wide transition-colors">Shop</button>
+                <div class="flex items-center justify-end flex-1 min-w-0">
+                    <div class="flex items-center space-x-4 md:space-x-6 overflow-x-auto no-scrollbar py-2 pr-2">
+                        <button onclick="showSection('home')" id="nav-home" class="text-red-500 uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap">News</button>
+                        <button onclick="showSection('bio')" id="nav-bio" class="text-gray-400 hover:text-white uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap">Biography</button>
+                        <button onclick="showSection('gallery')" id="nav-gallery" class="text-gray-400 hover:text-white uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap">Gallery</button>
+                        <button onclick="showSection('services')" id="nav-services" class="text-gray-400 hover:text-white uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap">Services</button>
+                        <button onclick="showSection('shop')" id="nav-shop" class="text-gray-400 hover:text-white uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap">Shop</button>
+                        <button onclick="showSection('contact')" id="nav-contact" class="text-gray-400 hover:text-white uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap">Contact</button>
                     </div>
-                    <div class="hidden md:block h-6 w-px bg-zinc-700"></div>
-                    <button onclick="showSection('cart')" class="relative flex items-center justify-center bg-zinc-800 hover:bg-red-600 text-white px-3 py-2 rounded-md transition-all active:scale-95 border border-zinc-700 hover:border-red-500">
-                        <svg class="w-5 h-5 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        <span class="hidden md:block text-sm font-bold uppercase">Cart</span> 
-                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md">0</span>
-                    </button>
+                    
+                    <div class="hidden md:block h-6 w-px bg-zinc-700 mx-4"></div>
+                    
+                    <div class="flex-shrink-0 ml-2">
+                        <button onclick="showSection('cart')" class="relative flex items-center justify-center bg-zinc-800 hover:bg-red-600 text-white px-3 py-2 rounded-md transition-all active:scale-95 border border-zinc-700">
+                            <svg class="w-5 h-5 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span class="hidden md:inline text-xs font-bold uppercase">Cart</span> 
+                            <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-lg border-2 border-zinc-900">0</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="relative w-full flex-grow pt-16 overflow-hidden min-h-screen">
+    <main class="w-full flex-grow pt-16">
         
-        <section id="section-home" class="absolute top-0 left-0 w-full transition-all duration-500 ease-in-out transform translate-x-0 opacity-100 z-10 pb-20">
-            <div class="relative py-20 md:py-32 overflow-hidden border-b border-zinc-800">
-                <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=2070&q=80" class="absolute inset-0 w-full h-full object-cover opacity-20">
+        <section id="section-home" class="block w-full pb-20 animate-fade-in">
+            <div class="relative py-20 md:py-32 overflow-hidden border-b border-zinc-800 bg-black">
+                <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=2070&q=80" class="absolute inset-0 w-full h-full object-cover opacity-30">
                 <div class="relative z-20 max-w-7xl mx-auto px-4 text-center">
-                    <h1 class="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-white drop-shadow-lg">
+                    <h1 class="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter text-white drop-shadow-2xl">
                         Triple TSS <br class="md:hidden"><span class="text-red-600">Champion</span>
                     </h1>
                 </div>
             </div>
-            <div class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+            <div class="max-w-7xl mx-auto px-4 py-12">
                 <div class="flex items-center mb-8">
                     <div class="w-1 h-8 bg-red-600 mr-4"></div>
                     <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-wide">Latest News</h2>
                 </div>
-                <div id="news-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"></div>
+                <div id="news-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    <p class="text-zinc-500">Loading racing news...</p>
+                </div>
             </div>
         </section>
 
-        <section id="section-shop" class="hidden absolute top-0 left-0 w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0 pb-20">
-            <div class="max-w-7xl mx-auto px-4 py-12 md:py-16">
+        <section id="section-news-detail" class="hidden w-full pb-20 animate-fade-in bg-zinc-950 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 py-10 md:py-16">
+                <button onclick="showSection('home')" class="group flex items-center text-red-500 hover:text-red-400 font-bold uppercase tracking-widest text-xs md:text-sm mb-8 transition-colors">
+                    <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back to News
+                </button>
+                
+                <img id="detail-img" src="" class="w-full h-64 md:h-[500px] object-cover rounded-2xl shadow-2xl mb-8 border border-zinc-800">
+                <h1 id="detail-title" class="text-3xl md:text-5xl font-black text-white mb-6 leading-tight"></h1>
+                <div class="w-20 h-1 bg-red-600 mb-8"></div>
+                <div id="detail-content" class="text-zinc-300 text-base md:text-lg leading-relaxed whitespace-pre-line">
+                    </div>
+            </div>
+        </section>
+
+        <section id="section-bio" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <div class="flex items-center mb-10">
+                    <div class="w-2 h-10 bg-red-600 mr-4"></div>
+                    <h1 class="text-3xl md:text-4xl font-black uppercase tracking-wide">Racing CV</h1>
+                </div>
+                <div id="bio-container" class="space-y-4 ml-4 border-l-2 border-zinc-700 pl-8 relative">
+                    <p class="text-zinc-500">Loading biography...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-gallery" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="flex items-center mb-8">
+                    <div class="w-2 h-10 bg-red-600 mr-4"></div>
+                    <h1 class="text-3xl md:text-4xl font-black uppercase tracking-wide">Media Gallery</h1>
+                </div>
+                <div id="gallery-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <p class="text-zinc-500">Loading gallery...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-services" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="flex items-center mb-8">
+                    <div class="w-2 h-10 bg-red-600 mr-4"></div>
+                    <h1 class="text-3xl md:text-4xl font-black uppercase tracking-wide">Programs</h1>
+                </div>
+                <div id="services-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <p class="text-zinc-500">Loading services...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-shop" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-7xl mx-auto px-4 py-12">
                 <div class="flex items-center mb-8">
                     <div class="w-2 h-10 bg-red-600 mr-4"></div>
                     <h1 class="text-3xl md:text-4xl font-black uppercase tracking-wide">Merchandise</h1>
                 </div>
-                <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"></div>
-            </div>
-        </section>
-
-        <section id="section-cart" class="hidden absolute top-0 left-0 w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0 pb-20">
-            <div class="max-w-4xl mx-auto px-4 py-12 md:py-16">
-                <h1 class="text-2xl md:text-3xl font-black uppercase mb-6 md:mb-8 border-b border-zinc-700 pb-4">Your Cart</h1>
-                <div id="cart-items-container" class="space-y-4 mb-8"></div>
-                <div class="bg-zinc-800 p-6 md:p-8 rounded-xl border border-zinc-700 shadow-xl">
-                    <div class="flex flex-col md:flex-row justify-between items-end md:items-center">
-                        <div class="mb-4 md:mb-0 text-left w-full md:w-auto">
-                            <p class="text-sm md:text-base text-gray-400 uppercase tracking-widest font-bold">Total Amount</p>
-                            <p id="cart-total" class="text-4xl md:text-5xl font-black text-red-500 mt-1">฿0</p>
-                        </div>
-                        <button onclick="showSection('checkout')" id="btn-checkout" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg uppercase tracking-wider transition-colors hidden shadow-lg shadow-red-600/20 active:scale-95">Checkout &rarr;</button>
-                    </div>
+                <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                    <p class="text-zinc-500">Loading products...</p>
                 </div>
             </div>
         </section>
 
-        <section id="section-checkout" class="hidden absolute top-0 left-0 w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0 pb-20">
-            <div class="max-w-2xl mx-auto px-4 py-12 md:py-16">
+        <section id="section-contact" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-3xl mx-auto px-4 py-12">
                 <div class="flex items-center mb-8">
-                    <div class="w-2 h-8 bg-red-600 mr-4"></div>
-                    <h1 class="text-2xl md:text-3xl font-black uppercase tracking-wide">Checkout</h1>
+                    <div class="w-2 h-10 bg-red-600 mr-4"></div>
+                    <h1 class="text-3xl md:text-4xl font-black uppercase tracking-wide">Contact Us</h1>
                 </div>
-                <form id="checkout-form" onsubmit="submitOrder(event)" class="bg-zinc-800 p-6 md:p-8 rounded-xl border border-zinc-700 space-y-6 shadow-xl">
-                    <div>
-                        <label class="block text-gray-400 text-xs md:text-sm font-bold uppercase tracking-wider mb-2">Full Name</label>
-                        <input type="text" id="cust-name" required class="w-full bg-zinc-900/50 text-white border border-zinc-700 rounded-lg p-3 md:p-4 focus:border-red-500 outline-none">
+                <form id="contact-form" onsubmit="submitContact(event)" class="bg-zinc-800 p-6 md:p-10 rounded-2xl border border-zinc-700 shadow-2xl space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <input type="text" id="contact-name" placeholder="Your Name" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500">
+                        <input type="email" id="contact-email" placeholder="Email Address" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500">
                     </div>
-                    <div>
-                        <label class="block text-gray-400 text-xs md:text-sm font-bold uppercase tracking-wider mb-2">Shipping Address</label>
-                        <textarea id="cust-address" required rows="3" class="w-full bg-zinc-900/50 text-white border border-zinc-700 rounded-lg p-3 md:p-4 focus:border-red-500 outline-none"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 text-xs md:text-sm font-bold uppercase tracking-wider mb-2">Payment Method</label>
-                        <select id="payment-method" onchange="toggleSlipUpload()" class="w-full bg-zinc-900/50 text-white border border-zinc-700 rounded-lg p-3 md:p-4 focus:border-red-500 outline-none">
-                            <option value="Bank Transfer">Bank Transfer (QR PromptPay)</option>
-                            <option value="Credit Card">Credit Card (Demo)</option>
-                        </select>
-                    </div>
-                    <div id="slip-upload-section" class="bg-zinc-900/80 p-6 rounded-lg border-2 border-dashed border-zinc-600 text-center">
-                        <div class="mb-4">
-                            <p class="text-red-500 font-black text-lg md:text-xl uppercase tracking-widest">PromptPay</p>
-                            <p class="text-white font-mono text-xl md:text-2xl tracking-widest mt-1">08X-XXX-XXXX</p>
-                        </div>
-                        <label class="block text-gray-400 text-xs md:text-sm mb-4">Please upload your transfer slip</label>
-                        <input type="file" id="slip-file" accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:font-bold file:uppercase file:bg-red-600 file:text-white cursor-pointer">
-                    </div>
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-lg uppercase tracking-wider transition-all text-lg shadow-lg shadow-red-600/20 active:scale-95 mt-8">Confirm Payment <span id="checkout-total" class="opacity-80 font-normal ml-2"></span></button>
+                    <input type="text" id="contact-subject" placeholder="Subject" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500">
+                    <textarea id="contact-message" placeholder="Message" rows="5" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500"></textarea>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-xl uppercase tracking-widest transition-all shadow-lg active:scale-95">Send Message</button>
                 </form>
             </div>
         </section>
 
-        <section id="section-success" class="hidden absolute top-0 left-0 w-full transition-all duration-500 ease-in-out transform translate-x-full opacity-0 pointer-events-none z-0 pb-20">
-            <div class="max-w-xl mx-auto px-4 py-24 text-center">
-                <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-green-500/20">
-                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        <section id="section-cart" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <h1 class="text-3xl font-black uppercase mb-8 border-b border-zinc-700 pb-4">Your Cart</h1>
+                <div id="cart-items-container" class="space-y-4 mb-8"></div>
+                <div class="bg-zinc-800 p-8 rounded-2xl border border-zinc-700 shadow-2xl">
+                    <div class="flex flex-col md:flex-row justify-between items-end md:items-center space-y-4 md:space-y-0">
+                        <div class="text-left w-full md:w-auto">
+                            <p class="text-gray-400 uppercase font-bold text-sm tracking-widest">Total Amount</p>
+                            <p id="cart-total" class="text-4xl md:text-6xl font-black text-red-500 mt-1">฿0</p>
+                        </div>
+                        <button onclick="showSection('checkout')" id="btn-checkout" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-black py-5 px-10 rounded-xl uppercase tracking-wider transition-all hidden active:scale-95 shadow-lg shadow-red-600/20">Proceed to Checkout &rarr;</button>
+                    </div>
                 </div>
-                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">Success!</h1>
-                <p class="text-lg text-gray-400 mb-10">We have received your order.</p>
-                <button onclick="showSection('shop')" class="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-white font-bold py-4 px-10 rounded-lg uppercase tracking-wider transition-all shadow-lg">Back to Shop</button>
+            </div>
+        </section>
+
+        <section id="section-checkout" class="hidden w-full pb-20 animate-fade-in">
+            <div class="max-w-2xl mx-auto px-4 py-12">
+                <div class="flex items-center mb-8"><div class="w-2 h-8 bg-red-600 mr-4"></div><h1 class="text-2xl md:text-3xl font-black uppercase">Secure Checkout</h1></div>
+                <form id="checkout-form" onsubmit="submitOrder(event)" class="bg-zinc-800 p-6 md:p-10 rounded-2xl border border-zinc-700 shadow-2xl space-y-6">
+                    <input type="text" id="cust-name" placeholder="Full Name" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500">
+                    <textarea id="cust-address" placeholder="Shipping Address" rows="3" required class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500"></textarea>
+                    <select id="payment-method" onchange="toggleSlipUpload()" class="w-full bg-zinc-900 text-white border border-zinc-700 rounded-lg p-4 outline-none focus:border-red-500">
+                        <option value="Bank Transfer">Bank Transfer (QR PromptPay)</option>
+                        <option value="Credit Card">Credit Card (Demo)</option>
+                    </select>
+                    <div id="slip-upload-section" class="bg-black/50 p-6 rounded-xl border-2 border-dashed border-zinc-600 text-center space-y-4">
+                        <p class="text-red-500 font-black text-xl uppercase">PromptPay: 08X-XXX-XXXX</p>
+                        <input type="file" id="slip-file" accept="image/*" class="text-xs md:text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-red-600 file:text-white cursor-pointer">
+                    </div>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-xl uppercase tracking-widest transition-all shadow-lg active:scale-95 mt-4">Confirm Payment <span id="checkout-total"></span></button>
+                </form>
+            </div>
+        </section>
+
+        <section id="section-success" class="hidden w-full py-32 animate-fade-in">
+            <div class="max-w-xl mx-auto px-4 text-center">
+                <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-green-500/30">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black uppercase mb-4 text-white">Order Success!</h1>
+                <p class="text-gray-400 mb-10 text-lg">We have received your order. ID: <span id="success-id" class="text-white font-mono">#---</span></p>
+                <button onclick="showSection('shop')" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-4 px-12 rounded-xl uppercase transition-all shadow-lg">Back to Shop</button>
             </div>
         </section>
 
@@ -136,98 +207,147 @@
     <script>
         let cart = [];
         let total = 0;
-        const sections = ['home', 'shop', 'cart', 'checkout', 'success'];
+        let allNews = []; // ตัวแปรเก็บข่าวทั้งหมดเอาไว้โชว์หน้า Detail
+        
+        // เพิ่ม news-detail เข้าไปในระบบ Sections
+        const sections = ['home', 'news-detail', 'bio', 'gallery', 'services', 'shop', 'contact', 'cart', 'checkout', 'success'];
+        const navItems = ['home', 'bio', 'gallery', 'services', 'shop', 'contact'];
 
         document.addEventListener('DOMContentLoaded', async () => {
             loadNews();
             loadProducts();
+            loadBiography();
+            loadGallery();
+            loadServices();
         });
 
-        // --- ระบบนำทางฉบับแก้บัค Horizontal Scroll ---
+        // --- ระบบสลับหน้า ---
         function showSection(targetId) {
             sections.forEach(id => {
                 const el = document.getElementById(`section-${id}`);
                 if (id === targetId) {
-                    // แสดง Section ที่ต้องการ
                     el.classList.remove('hidden');
-                    // ใช้ setTimeout เล็กน้อยเพื่อให้เบราว์เซอร์ลบ hidden ทันก่อนรัน animation
-                    setTimeout(() => {
-                        el.classList.replace('translate-x-full', 'translate-x-0') || el.classList.replace('-translate-x-full', 'translate-x-0');
-                        el.classList.replace('opacity-0', 'opacity-100');
-                        el.classList.remove('pointer-events-none', 'z-0');
-                        el.classList.add('z-10');
-                    }, 50);
+                    el.classList.add('block');
                 } else {
-                    // ซ่อน Section อื่น
-                    const isLeft = sections.indexOf(id) < sections.indexOf(targetId);
-                    el.classList.replace('translate-x-0', isLeft ? '-translate-x-full' : 'translate-x-full');
-                    el.classList.replace('opacity-100', 'opacity-0');
-                    el.classList.add('pointer-events-none', 'z-0');
-                    el.classList.remove('z-10');
-                    
-                    // หน่วงเวลาให้แอนิเมชันสไลด์จบก่อน แล้วค่อยใส่ hidden เพื่อซ่อนทิ้งไปเลย
-                    setTimeout(() => {
-                        if (!el.classList.contains('opacity-100')) {
-                            el.classList.add('hidden');
-                        }
-                    }, 500); // 500ms ตรงกับ duration-500
+                    el.classList.remove('block');
+                    el.classList.add('hidden');
                 }
             });
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            if(targetId === 'home' || targetId === 'shop') {
-                document.getElementById('nav-home').className = targetId === 'home' 
-                    ? "text-red-500 uppercase text-xs md:text-sm font-bold tracking-wide transition-colors" 
-                    : "text-gray-400 hover:text-white uppercase text-xs md:text-sm font-bold tracking-wide transition-colors";
-                document.getElementById('nav-shop').className = targetId === 'shop' 
-                    ? "text-red-500 uppercase text-xs md:text-sm font-bold tracking-wide transition-colors" 
-                    : "text-gray-400 hover:text-white uppercase text-xs md:text-sm font-bold tracking-wide transition-colors";
-            }
+            // อัปเดตสีเมนู (ถ้าอยู่หน้า news-detail ให้สว่างที่ปุ่ม News)
+            const activeNav = targetId === 'news-detail' ? 'home' : targetId;
+            navItems.forEach(nav => {
+                const el = document.getElementById(`nav-${nav}`);
+                if (el) {
+                    el.className = activeNav === nav 
+                        ? "text-red-500 uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap" 
+                        : "text-gray-400 hover:text-white uppercase text-[11px] md:text-sm font-bold tracking-wide transition-colors whitespace-nowrap";
+                }
+            });
         }
 
+        // --- ดึงข้อมูลข่าว และเปิดอ่านข่าวเต็ม ---
         async function loadNews() {
             try {
                 const res = await fetch('/api/news');
-                const news = await res.json();
-                document.getElementById('news-container').innerHTML = news.map(n => `
-                    <div class="bg-zinc-800/80 rounded-xl overflow-hidden border border-zinc-700 shadow-lg group cursor-pointer w-full">
-                        <div class="overflow-hidden w-full">
-                            <img src="${n.image_url}" class="w-full h-48 md:h-56 object-cover group-hover:scale-105 transition-transform duration-700">
+                allNews = await res.json();
+                
+                document.getElementById('news-container').innerHTML = allNews.length > 0 ? allNews.map((n, index) => `
+                    <div onclick="openNewsDetail(${index})" class="bg-zinc-800/50 flex flex-col rounded-2xl overflow-hidden border border-zinc-700 shadow-xl group hover:border-red-500/50 transition-all cursor-pointer h-full">
+                        <div class="overflow-hidden w-full shrink-0">
+                            <img src="${n.image_url}" class="w-full h-48 md:h-56 object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
                         </div>
-                        <div class="p-6">
-                            <h3 class="font-bold mb-3 text-lg md:text-xl leading-tight">${n.title}</h3>
-                            <p class="text-sm text-gray-400 line-clamp-3">${n.content}</p>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="font-bold mb-3 text-lg leading-tight group-hover:text-red-500 transition-colors">${n.title}</h3>
+                            <p class="text-sm text-gray-400 line-clamp-3 mb-4">${n.content}</p>
+                            <div class="mt-auto pt-2 border-t border-zinc-700/50 flex items-center text-red-500 font-bold text-xs uppercase tracking-widest">
+                                Read Article <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
                         </div>
-                    </div>`).join('');
+                    </div>`).join('') : '<p class="text-zinc-600">No updates found.</p>';
             } catch (e) {}
+        }
+
+        // ฟังก์ชันเมื่อกดอ่านข่าว
+        function openNewsDetail(index) {
+            const newsItem = allNews[index];
+            document.getElementById('detail-img').src = newsItem.image_url;
+            document.getElementById('detail-title').innerText = newsItem.title;
+            document.getElementById('detail-content').innerText = newsItem.content;
+            showSection('news-detail');
+        }
+
+        // --- ข้อมูลอื่นๆ ---
+        async function loadBiography() {
+            try {
+                const res = await fetch('/api/biography');
+                const bio = await res.json();
+                document.getElementById('bio-container').innerHTML = bio.length > 0 ? bio.map(b => `
+                    <div class="mb-10 relative">
+                        <div class="absolute w-4 h-4 bg-red-600 rounded-full -left-[41px] top-1.5 shadow-[0_0_10px_rgba(220,38,38,0.8)]"></div>
+                        <h3 class="text-2xl font-black text-white">${b.year}</h3>
+                        <p class="text-lg text-red-500 font-bold uppercase mt-1">${b.championship}</p>
+                        <p class="text-zinc-400 mt-2 text-sm">${b.details}</p>
+                    </div>`).join('') : '<p class="text-zinc-600">Bio empty.</p>';
+            } catch(e) {}
+        }
+
+        async function loadGallery() {
+            try {
+                const res = await fetch('/api/gallery');
+                const gallery = await res.json();
+                document.getElementById('gallery-container').innerHTML = gallery.length > 0 ? gallery.map(g => `
+                    <div class="aspect-square rounded-xl overflow-hidden border border-zinc-700 shadow-lg">
+                        <img src="${g.image_url}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>`).join('') : '<p class="text-zinc-600">Gallery empty.</p>';
+            } catch(e) {}
+        }
+
+        async function loadServices() {
+            try {
+                const res = await fetch('/api/services');
+                const services = await res.json();
+                document.getElementById('services-container').innerHTML = services.length > 0 ? services.map(s => `
+                    <div class="bg-zinc-800/80 rounded-2xl overflow-hidden flex flex-col sm:flex-row border border-zinc-700 shadow-xl">
+                        <img src="${s.image_url}" class="w-full sm:w-48 h-48 sm:h-auto object-cover opacity-80">
+                        <div class="p-6 flex flex-col justify-center">
+                            <h3 class="font-black text-xl mb-2 uppercase text-white">${s.name}</h3>
+                            <p class="text-sm text-gray-400 mb-4">${s.description}</p>
+                            <span class="text-red-500 font-black uppercase text-sm">${s.price_info}</span>
+                        </div>
+                    </div>`).join('') : '<p class="text-zinc-600">No services.</p>';
+            } catch(e) {}
         }
 
         async function loadProducts() {
             try {
                 const res = await fetch('/api/products');
                 const products = await res.json();
-                document.getElementById('product-container').innerHTML = products.map(p => `
-                    <div class="bg-zinc-800/80 border border-zinc-700 rounded-xl overflow-hidden shadow-lg w-full">
-                        <div class="h-48 md:h-64 bg-zinc-100 p-6 flex justify-center items-center">
-                            <img src="${p.image_url}" class="max-w-full max-h-full object-contain mix-blend-multiply">
+                document.getElementById('product-container').innerHTML = products.length > 0 ? products.map(p => `
+                    <div class="bg-zinc-800 rounded-2xl border border-zinc-700 shadow-2xl overflow-hidden group flex flex-col h-full">
+                        <div class="h-48 md:h-64 bg-zinc-100 p-6 flex items-center justify-center shrink-0">
+                            <img src="${p.image_url}" class="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform">
                         </div>
-                        <div class="p-5 md:p-6">
-                            <h3 class="font-bold uppercase mb-4 text-sm md:text-base tracking-wide h-10 line-clamp-2">${p.name}</h3>
-                            <div class="flex justify-between items-center mt-2">
-                                <span class="text-xl md:text-2xl font-black text-red-500">฿${p.price.toLocaleString()}</span>
-                                <button onclick="addToCart(${p.id}, '${p.name}', ${p.price}, '${p.image_url}')" class="bg-zinc-700 text-white text-xs font-bold px-4 py-2.5 rounded hover:bg-red-600 transition-colors uppercase">Add</button>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="font-bold uppercase text-sm line-clamp-2 mb-4">${p.name}</h3>
+                            <div class="flex justify-between items-center mt-auto">
+                                <span class="text-xl font-black text-red-500">฿${p.price.toLocaleString()}</span>
+                                <button onclick="addToCart(${p.id}, '${p.name}', ${p.price}, '${p.image_url}')" class="bg-zinc-700 hover:bg-red-600 text-white text-[10px] font-bold px-4 py-2 rounded-lg transition-colors uppercase active:scale-90">Add</button>
                             </div>
                         </div>
-                    </div>`).join('');
+                    </div>`).join('') : '<p class="text-zinc-600">Shop coming soon.</p>';
             } catch (e) {}
         }
 
+        // --- ระบบตะกร้า ---
         function addToCart(id, name, price, img) {
             cart.push({ id, name, price, img });
             updateCartUI();
-            const btn = document.getElementById('cart-count');
-            btn.classList.add('scale-150', 'bg-white', 'text-red-500');
-            setTimeout(() => btn.classList.remove('scale-150', 'bg-white', 'text-red-500'), 200);
+            const badge = document.getElementById('cart-count');
+            badge.classList.add('scale-150', 'bg-white', 'text-red-600');
+            setTimeout(() => badge.classList.remove('scale-150', 'bg-white', 'text-red-600'), 250);
         }
 
         function removeFromCart(index) {
@@ -238,21 +358,20 @@
         function updateCartUI() {
             document.getElementById('cart-count').innerText = cart.length;
             total = cart.reduce((sum, item) => sum + item.price, 0);
-            
             const container = document.getElementById('cart-items-container');
             if (cart.length === 0) {
-                container.innerHTML = '<p class="text-zinc-400 font-bold text-center py-8">Your cart is empty</p>';
+                container.innerHTML = '<div class="text-center py-20 bg-zinc-800/30 rounded-2xl border-2 border-dashed border-zinc-700"><p class="text-zinc-500 font-bold uppercase tracking-widest">Your cart is empty</p></div>';
                 document.getElementById('btn-checkout').classList.add('hidden');
             } else {
                 container.innerHTML = cart.map((item, index) => `
-                    <div class="flex items-center justify-between bg-zinc-800 p-4 rounded-xl border border-zinc-700">
+                    <div class="flex items-center justify-between bg-zinc-800 p-4 rounded-xl border border-zinc-700 shadow-lg">
                         <div class="flex items-center flex-1 min-w-0 pr-4">
-                            <img src="${item.img}" class="w-16 h-16 bg-zinc-100 rounded-lg p-2 mr-4 object-contain">
-                            <p class="font-bold text-sm md:text-base truncate">${item.name}</p>
+                            <img src="${item.img}" class="w-16 h-16 bg-zinc-100 rounded-lg p-2 mr-4 object-contain shadow-inner">
+                            <p class="font-bold text-sm md:text-base truncate text-white">${item.name}</p>
                         </div>
-                        <div class="flex items-center shrink-0">
-                            <span class="text-red-500 font-black mr-4">฿${item.price.toLocaleString()}</span>
-                            <button onclick="removeFromCart(${index})" class="text-zinc-500 hover:text-red-500 text-2xl">&times;</button>
+                        <div class="flex items-center space-x-6">
+                            <span class="text-red-500 font-black text-base">฿${item.price.toLocaleString()}</span>
+                            <button onclick="removeFromCart(${index})" class="text-zinc-500 hover:text-red-500 text-2xl font-light">&times;</button>
                         </div>
                     </div>`).join('');
                 document.getElementById('btn-checkout').classList.remove('hidden');
@@ -268,8 +387,40 @@
 
         async function submitOrder(e) {
             e.preventDefault();
-            // ... (โค้ด Submit เหมือนเดิม ขอย่อเพื่อให้สั้นลง)
-            showSection('success');
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = 'Processing...'; btn.disabled = true;
+            const orderData = {
+                customer_name: document.getElementById('cust-name').value,
+                address: document.getElementById('cust-address').value,
+                payment_method: document.getElementById('payment-method').value,
+                total_amount: total, cart_items: cart
+            };
+            try {
+                const res = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) });
+                if(res.ok) {
+                    const data = await res.json();
+                    document.getElementById('success-id').innerText = `#ORD-${data.order_id.toString().padStart(4, '0')}`;
+                    cart = []; updateCartUI(); e.target.reset(); showSection('success');
+                }
+            } catch (err) { alert("Order error."); } 
+            finally { btn.innerHTML = 'Confirm Payment'; btn.disabled = false; }
+        }
+
+        async function submitContact(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = 'Sending...'; btn.disabled = true;
+            const data = {
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                subject: document.getElementById('contact-subject').value,
+                message: document.getElementById('contact-message').value
+            };
+            try {
+                const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                if(res.ok) { alert('Message sent!'); e.target.reset(); }
+            } catch (err) { alert("Error."); } 
+            finally { btn.innerHTML = 'Send Message'; btn.disabled = false; }
         }
     </script>
 </body>
